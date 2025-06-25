@@ -38,7 +38,7 @@ public class HardwareController {
     }
 
 
-    @PutMapping("/hardware/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HardwareDTO> update(@PathVariable Long id, @Valid @RequestBody HardwareDTO updateHardwareDTO){
        if(hardwareServices.hardwareByIdExists(id)){
           hardwareServices.update(updateHardwareDTO,id);
