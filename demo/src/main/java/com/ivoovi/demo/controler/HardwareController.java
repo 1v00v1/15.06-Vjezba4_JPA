@@ -4,6 +4,7 @@ import com.ivoovi.demo.dto.HardwareDTO;
 import com.ivoovi.demo.services.HardwareServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,31 +25,44 @@ public class HardwareController {
         return hardwareServices.findAll();
     }
 
-    @GetMapping("{code}")
-    public HardwareDTO getByCode(@PathVariable String code){
-        return hardwareServices.findByICode(code).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"HARDWARE NOT FOUND BY THAT CODE")
-        );
+
+
+    @PostMapping("/new")
+
+    public ResponseEntity<?> save(@Valid @RequestBody HardwareDTO hardwareDTO){
+        try{
+            return ResponseEntity.ok(hardwareServices.save(hardwareDTO));
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public HardwareDTO save(@Valid @RequestBody HardwareDTO hardwareDTO){
-        return hardwareServices.save(hardwareDTO).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.CONFLICT,"HARDWARE WITH THAT CODE ALREADY EXISTS")
-        );
-    }
 
-    @PutMapping("{code}")
-    public HardwareDTO update(@PathVariable String code, @Valid @RequestBody HardwareDTO updateHardwareDTO){
-        return hardwareServices.update(code, updateHardwareDTO).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,"HARDWARE NOT FOUND BY THAT CODE")
-        );
+    @PutMapping("/hardware/{id}")
+    public ResponseEntity<HardwareDTO> update(@PathVariable Long id, @Valid @RequestBody HardwareDTO updateHardwareDTO){
+       if(hardwareServices.hardwareByIdExists(id)){
+          hardwareServices.update(updateHardwareDTO,id);
+          return ResponseEntity.ok(updateHardwareDTO);
+       }
+       else {
+           return ResponseEntity.notFound().build();
+       }
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("{code}")
-    public void delete(@PathVariable String code){
-        hardwareServices.deleteByCode(code);
+    @DeleteMapping("{id}")
+    public ResponseEntity<?>  delete(@PathVariable Long id){
+
+        if(hardwareServices.hardwareByIdExists(id)){
+            boolean result = hardwareServices.deleteByID(id);
+            if(result){
+                return new ResponseEntity<>(HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 }

@@ -10,11 +10,12 @@ public interface HardwareServices {
 
     List<HardwareDTO> findAll();
 
-    Optional<HardwareDTO> findByICode(String code);
+    List<HardwareDTO> findById(Long id);
 
-    Optional<HardwareDTO> save(HardwareDTO hardwareDTO);
+    HardwareDTO save(HardwareDTO hardwareDTO);
 
-    Optional<HardwareDTO> update(String code, HardwareDTO updateHardwareDTO);
+    Optional<HardwareDTO> update( HardwareDTO updateHardwareDTO,Long id);
 
-    void deleteByCode(String code);
+    boolean deleteByID(Long id);
+    boolean hardwareByIdExists(Long id);
 }

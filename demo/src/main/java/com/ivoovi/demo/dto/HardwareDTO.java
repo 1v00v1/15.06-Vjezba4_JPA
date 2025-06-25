@@ -22,7 +22,7 @@ public class HardwareDTO {
     private String name;
 
     @NotNull(message = "Type must be set to CPU, GPU, MBO, RAM, STORAGE or OTHER")
-    private Type type;
+    private String type;
     @NotBlank(message = "Code cannot be blank")
     @Size(min = 7 , max = 7, message = "Code must be 7 characters")
     private String code;
@@ -37,12 +37,6 @@ public class HardwareDTO {
     private BigDecimal price;
 
 
-    public HardwareDTO(@NotNull Hardware hardware){
-        this.name = hardware.getName();
-        this.type = hardware.getType();
-        this.code = hardware.getCode();
-        this.stock = hardware.getStock();
-        this.price = hardware.getPrice();
-    }
+
 
 }
